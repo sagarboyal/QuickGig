@@ -1,41 +1,29 @@
-version: "3.9"
-
-networks:
-  backend:
-    driver: bridge
-
-volumes:
-  postgres_data_quickgig:
-  pgadmin_data_quickgig:
-
 services:
   postgres:
-    container_name: postgres_container
-    image: postgres:17
+    image: postgres:15
+    container_name: gig-postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: user
-      PGDATA: /var/lib/postgresql/data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: quickgig
     ports:
       - "5432:5432"
-    networks:
-      - backend
     volumes:
-      - postgres_data_quickgig:/var/lib/postgresql/data
-    restart: unless-stopped
+      - postgres_data:/var/lib/postgresql/data
 
   pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:8
+    container_name: gig-pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5050:80"
-    networks:
-      - backend
-    volumes:
-      - pgadmin_data_quickgig:/var/lib/pgadmin
-    restart: unless-stopped
+      - "5000:80"
     depends_on:
       - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:
