@@ -9,6 +9,7 @@ import com.main.quickgig.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
@@ -17,7 +18,8 @@ public class AppConfig {
 
     @Bean
     public CommandLineRunner commandLineRunner(RoleRepository roleRepository,
-                                               UserRepository userRepository) {
+                                               UserRepository userRepository,
+                                               PasswordEncoder passwordEncoder) {
         return args -> {
             Role roleAdmin = roleRepository.findByName(Roles.ROLE_ADMIN)
                     .orElseGet(() -> {
@@ -40,15 +42,15 @@ public class AppConfig {
             Set<Role> workerRoles = Set.of(roleWorker);
 
             if (!userRepository.existsByEmail("admin@gmail.com")) {
-                User admin = new User("admin", "admin@gmail.com", "admin");
+                User admin = new User("admin", "admin@gmail.com", passwordEncoder.encode("admin"));
                 userRepository.save(admin);
             }
             if (!userRepository.existsByEmail("employer@gmail.com")) {
-                User employer = new User("employer", "employer@gmail.com", "employer");
+                User employer = new User("employer", "employer@gmail.com", passwordEncoder.encode("employer"));
                 userRepository.save(employer);
             }
             if (!userRepository.existsByEmail("worker@gmail.com")) {
-                User worker = new User("worker", "worker@gmail.com","worker");
+                User worker = new User("worker", "worker@gmail.com",passwordEncoder.encode("worker"));
                 userRepository.save(worker);
             }
 
